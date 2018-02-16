@@ -1,0 +1,2 @@
+# LiteNetLibManagerSimpleCharacter
+Simple character controller for LiteNetLibManager project

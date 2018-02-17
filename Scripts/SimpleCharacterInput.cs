@@ -9,7 +9,7 @@ public struct SimpleCharacterInput
     public float horizontal;
     public float vertical;
     public bool isJump;
-    public uint tick;
+    public float timestamp;
 }
 
 public class SimpleCharacterInputField : LiteNetLibNetField<SimpleCharacterInput>
@@ -20,7 +20,7 @@ public class SimpleCharacterInputField : LiteNetLibNetField<SimpleCharacterInput
         result.horizontal = (float)reader.GetShort() * 0.01f;
         result.vertical = (float)reader.GetShort() * 0.01f;
         result.isJump = reader.GetBool();
-        result.tick = reader.GetUInt();
+        result.timestamp = reader.GetFloat();
         Value = result;
     }
 
@@ -34,6 +34,8 @@ public class SimpleCharacterInputField : LiteNetLibNetField<SimpleCharacterInput
         writer.Put((short)(Value.horizontal * 100));
         writer.Put((short)(Value.vertical * 100));
         writer.Put(Value.isJump);
-        writer.Put(Value.tick);
+        writer.Put(Value.timestamp);
     }
 }
+
+public class SimpleCharacterInputSyncField : LiteNetLibSyncField<SimpleCharacterInputField, SimpleCharacterInput> { }

@@ -9,7 +9,7 @@ public struct SimpleCharacterResult
     public Vector3 speed;
     public Vector3 position;
     public Quaternion rotation;
-    public uint tick;
+    public float timestamp;
 }
 
 public class SimpleCharacterResultField : LiteNetLibNetField<SimpleCharacterResult>
@@ -20,7 +20,7 @@ public class SimpleCharacterResultField : LiteNetLibNetField<SimpleCharacterResu
         result.speed = new Vector3((float)reader.GetShort() * 0.01f, (float)reader.GetShort() * 0.01f, (float)reader.GetShort() * 0.01f);
         result.position = new Vector3((float)reader.GetShort() * 0.01f, (float)reader.GetShort() * 0.01f, (float)reader.GetShort() * 0.01f);
         result.rotation = new Quaternion((float)reader.GetShort() * 0.01f, (float)reader.GetShort() * 0.01f, (float)reader.GetShort() * 0.01f, (float)reader.GetShort() * 0.01f);
-        result.tick = reader.GetUInt();
+        result.timestamp = reader.GetFloat();
         Value = result;
     }
 
@@ -41,6 +41,8 @@ public class SimpleCharacterResultField : LiteNetLibNetField<SimpleCharacterResu
         writer.Put((short)(Value.rotation.y) * 100);
         writer.Put((short)(Value.rotation.z) * 100);
         writer.Put((short)(Value.rotation.w) * 100);
-        writer.Put(Value.tick);
+        writer.Put(Value.timestamp);
     }
 }
+
+public class SimpleCharacterResultSyncField : LiteNetLibSyncField<SimpleCharacterResultField, SimpleCharacterResult> { }

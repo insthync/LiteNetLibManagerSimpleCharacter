@@ -112,11 +112,8 @@ public class SimpleCharacter : LiteNetLibBehaviour
             }
             if (foundIndex == -1)
             {
-                // Clear Inputs list if no needed records found 
-                while (inputList.Count != 0)
-                {
-                    inputList.RemoveAt(0);
-                }
+                // Clear Inputs list if no needed records found
+                inputList.Clear();
                 return;
             }
             // Replay recorded inputs

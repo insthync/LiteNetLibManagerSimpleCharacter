@@ -20,7 +20,7 @@ public class SimpleCharacterInputField : LiteNetLibNetField<SimpleCharacterInput
         result.horizontal = (float)reader.GetShort() * 0.01f;
         result.vertical = (float)reader.GetShort() * 0.01f;
         result.isJump = reader.GetBool();
-        result.timestamp = reader.GetFloat();
+        result.timestamp = (float)reader.GetShort() * 0.01f;
         Value = result;
     }
 
@@ -34,8 +34,6 @@ public class SimpleCharacterInputField : LiteNetLibNetField<SimpleCharacterInput
         writer.Put((short)(Value.horizontal * 100));
         writer.Put((short)(Value.vertical * 100));
         writer.Put(Value.isJump);
-        writer.Put(Value.timestamp);
+        writer.Put((short)(Value.timestamp * 100));
     }
 }
-
-public class SimpleCharacterInputSyncField : LiteNetLibSyncField<SimpleCharacterInputField, SimpleCharacterInput> { }

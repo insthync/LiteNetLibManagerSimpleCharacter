@@ -24,7 +24,6 @@ public class SimpleCharacter : LiteNetLibBehaviour
     private float lastTimestamp = 0;
     private Vector3 startPosition;
     private Quaternion startRotation;
-    private float step = 0;
 
     #region Temp components
     private Transform tempTransform;
@@ -198,19 +197,19 @@ public class SimpleCharacter : LiteNetLibBehaviour
                     return;
 
                 // Move and rotate part. Nothing interesting here
-                var inputs = inputList[0];
+                var input = inputList[0];
                 inputList.RemoveAt(0);
                 var lastPosition = tempResult.position;
                 var lastRotation = tempResult.rotation;
-                tempResult.rotation = Rotate(inputs, tempResult);
-                tempResult.position = Move(inputs, tempResult);
+                tempResult.rotation = Rotate(input, tempResult);
+                tempResult.position = Move(input, tempResult);
 
                 // Sending results to other clients(state sync)
                 if (dataStep >= sendInterval)
                 {
                     if (Vector3.Distance(tempResult.position, lastPosition) > 0 || Quaternion.Angle(tempResult.rotation, lastRotation) > 0)
                     {
-                        tempResult.timestamp = inputs.timestamp;
+                        tempResult.timestamp = input.timestamp;
                         SendResult(tempResult);
                     }
                     dataStep = 0;
@@ -235,7 +234,7 @@ public class SimpleCharacter : LiteNetLibBehaviour
                         startPosition = tempResult.position;
                         startRotation = tempResult.rotation;
                     }
-                    step = 1f / sendInterval;
+                    float step = 1f / sendInterval;
                     tempResult.rotation = Quaternion.Slerp(startRotation, resultList[0].rotation, dataStep);
                     tempResult.position = Vector3.Lerp(startPosition, resultList[0].position, dataStep);
                     dataStep += step * Time.fixedDeltaTime;

@@ -26,16 +26,6 @@ public class SimpleCharacter : LiteNetLibBehaviour
     private Quaternion startRotation;
     private float step = 0;
 
-    public void SetStartPosition(Vector3 position)
-    {
-        tempResult.position = position;
-    }
-
-    public void SetStartRotation(Quaternion rotation)
-    {
-        tempResult.rotation = rotation;
-    }
-
     #region Temp components
     private Transform tempTransform;
     public Transform TempTransform
@@ -49,10 +39,26 @@ public class SimpleCharacter : LiteNetLibBehaviour
     }
     #endregion
 
-    private void Awake()
+    protected virtual void Awake()
     {
         RegisterNetFunction("SendInput", new LiteNetLibFunction<SimpleCharacterInputField>(SendInputCallback));
         RegisterNetFunction("SendResult", new LiteNetLibFunction<SimpleCharacterResultField>(SendResultCallback));
+    }
+
+    protected virtual void Start()
+    {
+        SetStartPosition(TempTransform.position);
+        SetStartRotation(TempTransform.rotation);
+    }
+
+    public void SetStartPosition(Vector3 position)
+    {
+        tempResult.position = position;
+    }
+
+    public void SetStartRotation(Quaternion rotation)
+    {
+        tempResult.rotation = rotation;
     }
 
     private void SendInput(SimpleCharacterInput input)

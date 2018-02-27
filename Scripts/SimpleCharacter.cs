@@ -5,8 +5,6 @@ using LiteNetLibHighLevel;
 
 public class SimpleCharacter : LiteNetLibBehaviour
 {
-    [Header("Network settings")]
-    public float sendInterval = 0.05f;
     [Header("Movement settings")]
     public float moveSpeed = 5f;
     public float jumpHeight = 2f;

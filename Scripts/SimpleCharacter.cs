@@ -83,7 +83,7 @@ public class SimpleCharacter : LiteNetLibBehaviour
 
         lastTimestamp = result.timestamp;
         // Non-owner client
-        if (!IsLocalClient && !IsServer)
+        if (!IsOwnerClient && !IsServer)
         {
             //Adding results to the results list so they can be used in interpolation process
             result.timestamp = Time.time;
@@ -92,7 +92,7 @@ public class SimpleCharacter : LiteNetLibBehaviour
         
         // Owner client
         // Server client reconciliation process should be executed in order to client's rotation and position with server values but do it without jittering
-        if (IsLocalClient && !IsServer)
+        if (IsOwnerClient && !IsServer)
         {
             // Update client's position and rotation with ones from server 
             tempResult.rotation = result.rotation;
@@ -131,7 +131,7 @@ public class SimpleCharacter : LiteNetLibBehaviour
 
     private void Update()
     {
-        if (IsLocalClient)
+        if (IsOwnerClient)
         {
             tempInput.horizontal = Input.GetAxis("Horizontal");
             tempInput.vertical = Input.GetAxis("Vertical");
@@ -141,7 +141,7 @@ public class SimpleCharacter : LiteNetLibBehaviour
 
     private void FixedUpdate()
     {
-        if (IsLocalClient)
+        if (IsOwnerClient)
         {
             tempInput.timestamp = Time.time;
             // Client side prediction for non-authoritative client or plane movement and rotation for listen server/host

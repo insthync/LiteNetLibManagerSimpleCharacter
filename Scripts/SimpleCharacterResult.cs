@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using LiteNetLibHighLevel;
+using LiteNetLibManager;
 using LiteNetLib.Utils;
 
 public struct SimpleCharacterResult

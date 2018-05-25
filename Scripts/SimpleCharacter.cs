@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using LiteNetLibManager;
 
+[RequireComponent(typeof(Rigidbody))]
 public class SimpleCharacter : LiteNetLibBehaviour
 {
     [Header("Movement settings")]
@@ -32,6 +33,16 @@ public class SimpleCharacter : LiteNetLibBehaviour
             if (tempTransform == null)
                 tempTransform = GetComponent<Transform>();
             return tempTransform;
+        }
+    }
+    private Rigidbody tempRigidbody;
+    public Rigidbody TempRigidbody
+    {
+        get
+        {
+            if (tempRigidbody == null)
+                tempRigidbody = GetComponent<Rigidbody>();
+            return tempRigidbody;
         }
     }
     #endregion
@@ -259,9 +270,32 @@ public class SimpleCharacter : LiteNetLibBehaviour
 
     public virtual Vector3 Move(SimpleCharacterInput input, SimpleCharacterResult current)
     {
-        TempTransform.position = current.position;
-        TempTransform.Translate(Vector3.ClampMagnitude(new Vector3(input.horizontal, 0, input.vertical), 1) * moveSpeed * Time.fixedDeltaTime);
+        Vector3 velocity = TempRigidbody.velocity;
+        var moveDirection = new Vector3(input.horizontal, 0, input.vertical);
+        {
+            var moveDirectionMagnitude = moveDirection.sqrMagnitude;
+            if (moveDirectionMagnitude > 1)
+                moveDirection = moveDirection.normalized;
+            
+            var targetVelocity = moveDirection * moveSpeed;
+
+            // Apply a force that attempts to reach our target velocity
+            Vector3 velocityChange = (targetVelocity - velocity);
+            velocityChange.x = Mathf.Clamp(velocityChange.x, -moveSpeed, moveSpeed);
+            velocityChange.y = 0;
+            velocityChange.z = Mathf.Clamp(velocityChange.z, -moveSpeed, moveSpeed);
+            TempRigidbody.AddForce(velocityChange, ForceMode.VelocityChange);
+        }
+        if (input.isJump)
+            TempRigidbody.velocity = new Vector3(velocity.x, CalculateJumpVerticalSpeed(), velocity.z);
         return TempTransform.position;
+    }
+
+    protected float CalculateJumpVerticalSpeed()
+    {
+        // From the jump height and gravity we deduce the upwards speed 
+        // for the character to reach at the apex.
+        return Mathf.Sqrt(2f * jumpHeight * -Physics.gravity.y);
     }
 
     public virtual Quaternion Rotate(SimpleCharacterInput input, SimpleCharacterResult current)

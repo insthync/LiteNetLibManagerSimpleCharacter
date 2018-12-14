@@ -2,38 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 using LiteNetLibManager;
+using LiteNetLib;
 using LiteNetLib.Utils;
 
-public struct SimpleCharacterInput
+public struct SimpleCharacterInput : INetSerializable
 {
     public float horizontal;
     public float vertical;
     public bool isJump;
     public float timestamp;
+
+    public void Deserialize(NetDataReader reader)
+    {
+        horizontal = (float)reader.GetShort() * 0.01f;
+        vertical = (float)reader.GetShort() * 0.01f;
+        isJump = reader.GetBool();
+        timestamp = (float)reader.GetShort() * 0.01f;
+    }
+
+    public void Serialize(NetDataWriter writer)
+    {
+        writer.Put((short)(horizontal * 100));
+        writer.Put((short)(vertical * 100));
+        writer.Put(isJump);
+        writer.Put((short)(timestamp * 100));
+    }
 }
 
-public class SimpleCharacterInputField : LiteNetLibNetField<SimpleCharacterInput>
+public class SimpleCharacterInputField : LiteNetLibSyncField<SimpleCharacterInput>
 {
-    public override void Deserialize(NetDataReader reader)
-    {
-        var result = new SimpleCharacterInput();
-        result.horizontal = (float)reader.GetShort() * 0.01f;
-        result.vertical = (float)reader.GetShort() * 0.01f;
-        result.isJump = reader.GetBool();
-        result.timestamp = (float)reader.GetShort() * 0.01f;
-        Value = result;
-    }
-
-    public override bool IsValueChanged(SimpleCharacterInput newValue)
+    protected override bool IsValueChanged(SimpleCharacterInput newValue)
     {
         return !newValue.Equals(Value);
-    }
-
-    public override void Serialize(NetDataWriter writer)
-    {
-        writer.Put((short)(Value.horizontal * 100));
-        writer.Put((short)(Value.vertical * 100));
-        writer.Put(Value.isJump);
-        writer.Put((short)(Value.timestamp * 100));
     }
 }

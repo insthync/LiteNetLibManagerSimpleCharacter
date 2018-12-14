@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using LiteNetLibManager;
-using LiteNetLib;
 using LiteNetLib.Utils;
 
 public struct SimpleCharacterInput : INetSerializable

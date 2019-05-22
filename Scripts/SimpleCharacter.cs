@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using LiteNetLibManager;
+using LiteNetLib;
 
 [RequireComponent(typeof(Rigidbody))]
 public class SimpleCharacter : LiteNetLibBehaviour
@@ -71,7 +72,7 @@ public class SimpleCharacter : LiteNetLibBehaviour
 
     private void SendInput(SimpleCharacterInput input)
     {
-        CallNetFunction("SendInput", FunctionReceivers.Server, input);
+        CallNetFunction("SendInput", DeliveryMethod.ReliableOrdered, FunctionReceivers.Server, input);
     }
 
     private void SendInputCallback(SimpleCharacterInputField inputParam)
@@ -82,7 +83,7 @@ public class SimpleCharacter : LiteNetLibBehaviour
 
     private void SendResult(SimpleCharacterResult result)
     {
-        CallNetFunction("SendResult", FunctionReceivers.All, result);
+        CallNetFunction("SendResult", DeliveryMethod.ReliableOrdered, FunctionReceivers.All, result);
     }
 
     private void SendResultCallback(SimpleCharacterResultField resultParam)

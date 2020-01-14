@@ -50,8 +50,8 @@ public class SimpleCharacter : LiteNetLibBehaviour
 
     protected virtual void Awake()
     {
-        RegisterNetFunction("SendInput", new LiteNetLibFunction<SimpleCharacterInputField>(SendInputCallback));
-        RegisterNetFunction("SendResult", new LiteNetLibFunction<SimpleCharacterResultField>(SendResultCallback));
+        RegisterNetFunction("SendInput", new LiteNetLibFunction<SimpleCharacterInput>(SendInputCallback));
+        RegisterNetFunction("SendResult", new LiteNetLibFunction<SimpleCharacterResult>(SendResultCallback));
     }
 
     protected virtual void Start()
@@ -75,10 +75,9 @@ public class SimpleCharacter : LiteNetLibBehaviour
         CallNetFunction("SendInput", DeliveryMethod.ReliableOrdered, FunctionReceivers.Server, input);
     }
 
-    private void SendInputCallback(SimpleCharacterInputField inputParam)
+    private void SendInputCallback(SimpleCharacterInput inputParam)
     {
-        var input = inputParam.Value;
-        inputList.Add(input);
+        inputList.Add(inputParam);
     }
 
     private void SendResult(SimpleCharacterResult result)
@@ -86,9 +85,9 @@ public class SimpleCharacter : LiteNetLibBehaviour
         CallNetFunction("SendResult", DeliveryMethod.ReliableOrdered, FunctionReceivers.All, result);
     }
 
-    private void SendResultCallback(SimpleCharacterResultField resultParam)
+    private void SendResultCallback(SimpleCharacterResult resultParam)
     {
-        var result = resultParam.Value;
+        var result = resultParam;
         // Discard out of order results
         if (result.timestamp <= lastTimestamp)
             return;
